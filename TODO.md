@@ -1,0 +1,3 @@
+- [x] Add staggered fade-in animations for program cards and testimonial cards in script.js
+- [x] Add animated gradient backgrounds for programs and testimonials sections in styles.css
+- [x] Test the effects by running the site
