@@ -30,6 +30,7 @@ button,input,select,textarea {
 }
 button,a,input,select,textarea {
   -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
 }
 button {
   cursor:pointer;
@@ -171,6 +172,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .menu-toggle {
   display:none;
+  min-height:44px;
+  min-width:80px;
   background:none;
   border:1px solid var(--line);
   padding:7px 12px;
@@ -488,13 +491,14 @@ h1 em {
   gap:7px;
 }
 input,textarea,select {
-  width:100%;
+  min-width:0;
+  min-height:44px;  width:100%;
   border:1px solid #d9bfa9;
   padding:12px 14px;
   border-radius:0;
   color:var(--ink);
   background:var(--cream);
-  font-size:13px;
+  font-size:16px;
 }
 textarea {
   min-height:95px;
@@ -607,19 +611,9 @@ body:has(dialog[open]) {
     min-height:590px;
   }
 }
-@media(max-width:700px) {
+@media(max-width:950px) {
   html {
     scroll-padding-top:85px;
-  }
-  .container {
-    width:88%;
-  }
-  .section {
-    padding-top:60px;
-    padding-bottom:60px;
-  }
-  .utility-bar {
-    font-size:9px;
   }
   .nav-container {
     min-height:78px;
@@ -635,15 +629,40 @@ body:has(dialog[open]) {
     align-items:stretch;
     gap:0;
     padding:0 0 16px;
+    max-height:calc(100dvh - 110px);
+    overflow-y:auto;
   }
   .navbar nav>a {
     padding:12px 0;
+    min-height:44px;
+    font-size:14px;
   }
   .navbar nav>.button {
     padding:12px;
   }
   .navbar nav.collapsed {
     display:none;
+  }
+  .contact-grid {
+    grid-template-columns:1fr;
+  }
+  .contact-grid>div>p:not(.eyebrow) {
+    max-width:580px;
+  }
+}
+@media(max-width:700px) {
+  html {
+    scroll-padding-top:85px;
+  }
+  .container {
+    width:88%;
+  }
+  .section {
+    padding-top:60px;
+    padding-bottom:60px;
+  }
+  .utility-bar {
+    font-size:9px;
   }
   .hero {
     min-height:590px;
@@ -656,7 +675,7 @@ body:has(dialog[open]) {
     background:linear-gradient(90deg,#472313e8,#47231375);
   }
   h1 {
-    font-size:47px;
+    font-size:clamp(38px, 10vw, 47px);
     letter-spacing:-1.5px;
   }
   .hero-description {
