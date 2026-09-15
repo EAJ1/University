@@ -807,3 +807,30 @@ body:has(dialog[open]) {
   .subject-intro { font-size:16px; }
   .nav-container>.text-link { font-size:11px; }
 }
+
+/* Fixed vector geometry keeps interface icons identical across devices. */
+.icon {
+  display:inline-block;
+  width:20px;
+  height:20px;
+  flex-shrink:0;
+  vertical-align:middle;
+  pointer-events:none;
+}
+.close-lightbox {
+  display:grid;
+  place-items:center;
+}
+.faq summary {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  list-style:none;
+}
+.faq summary::-webkit-details-marker {
+  display:none;
+}
+.faq details[open] .icon-chevron {
+  transform:rotate(180deg);
+}
