@@ -37,9 +37,14 @@ function filterPrograms() {
 }
 searchInput.addEventListener('input', filterPrograms);
 searchForm.addEventListener('submit', event => { event.preventDefault(); filterPrograms(); });
-programCards.forEach(card => card.addEventListener('click', () => {
-  document.querySelector('#program-interest').value = card.dataset.program;
-}));
+// Subject guides link back to the draft form with their selection.
+const requestedProgram = new URLSearchParams(window.location.search).get('program');
+const selectedCard = programCards.find(card =>
+  new URL(card.href).pathname.endsWith(`/programs/${requestedProgram}.html`)
+);
+if (selectedCard) {
+  document.querySelector('#program-interest').value = selectedCard.dataset.program;
+}
 
 const lightbox = document.querySelector('.lightbox');
 const lightboxImage = lightbox.querySelector('img');

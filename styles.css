@@ -764,3 +764,46 @@ body:has(dialog[open]) {
     animation:none!important;
   }
 }
+
+/* Subject guides and admissions information. */
+.concept-note {
+  padding:18px 22px;
+  border-left:3px solid var(--orange);
+  background:#f5e8da;
+  color:var(--muted);
+  font-size:13px;
+}
+.about>.concept-note { grid-column:1/-1; }
+.stats strong { font-size:clamp(22px, 3.5vw, 42px); }
+.admissions { background:#f5e8da; }
+.admissions-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+.admissions-grid article { padding:26px; background:var(--cream); }
+.admissions h3 { font:400 26px Georgia,serif; margin:16px 0; }
+.admissions-grid p,.faq p { font-size:14px; color:var(--muted); }
+.faq { max-width:850px; margin:50px auto 0; scroll-margin-top:110px; }
+.faq details { border-bottom:1px solid #cfbba8; padding:16px 0; }
+.faq summary { cursor:pointer; font-weight:600; padding:8px 0; }
+.faq summary:focus-visible { outline:3px solid var(--orange); outline-offset:4px; }
+.faq details p { padding:12px 0; }
+.subject-page>h1 { font-size:clamp(38px,6vw,70px); overflow-wrap:anywhere; }
+.subject-intro { font-size:19px; max-width:750px; margin:25px 0; }
+.subject-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:60px; margin:45px 0; }
+.subject-grid h2 { font-size:30px; letter-spacing:-.5px; margin:0 0 20px; }
+.subject-grid ul { padding-left:22px; margin-bottom:35px; }
+.subject-grid li { padding:5px 0; }
+.subject-grid aside { padding:28px; background:#f5e8da; }
+.subject-grid aside p { margin-bottom:22px; }
+.subject-grid .button { gap:12px; }
+.subject-page+.footer { margin-top:30px; }
+@media(max-width:1100px) and (min-width:951px) {
+  .navbar nav { gap:16px; }
+  .navbar nav .button { gap:12px; padding:12px; }
+}
+@media(max-width:950px) {
+  .admissions-grid { grid-template-columns:1fr; }
+  .subject-grid { grid-template-columns:1fr; gap:30px; }
+}
+@media(max-width:400px) {
+  .subject-intro { font-size:16px; }
+  .nav-container>.text-link { font-size:11px; }
+}
