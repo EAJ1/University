@@ -1,188 +1,80 @@
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
+const menuButton = document.querySelector('.menu-toggle');
+const navigation = document.querySelector('#navigation');
+menuButton.hidden = false;
+navigation.classList.add('collapsed');
+function closeMenu() {
+  navigation.classList.add('collapsed');
+  menuButton.setAttribute('aria-expanded', 'false');
+}
+menuButton.addEventListener('click', () => {
+  const open = menuButton.getAttribute('aria-expanded') !== 'true';
+  menuButton.setAttribute('aria-expanded', String(open));
+  navigation.classList.toggle('collapsed', !open);
+});
+navigation.addEventListener('click', event => {
+  if (event.target.closest('a')) closeMenu();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+    closeMenu();
+    menuButton.focus();
+  }
 });
 
-// Navbar background change on scroll
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = '#000000';
-        navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.5)';
-    } else {
-        navbar.style.background = '#000000';
-        navbar.style.boxShadow = 'none';
-    }
-});
+const searchForm = document.querySelector('.program-search');
+const searchInput = document.querySelector('#program-query');
+const programCards = [...document.querySelectorAll('.program-card')];
+searchForm.hidden = false;
+function filterPrograms() {
+  const query = searchInput.value.trim().toLowerCase();
+  let count = 0;
+  programCards.forEach(card => {
+    card.hidden = !card.textContent.toLowerCase().includes(query);
+    if (!card.hidden) count++;
+  });
+  document.querySelector('.empty-state').hidden = count > 0;
+  document.querySelector('#search-status').textContent = query ? `${count} field${count === 1 ? '' : 's'} of study found.` : '';
+}
+searchInput.addEventListener('input', filterPrograms);
+searchForm.addEventListener('submit', event => { event.preventDefault(); filterPrograms(); });
+programCards.forEach(card => card.addEventListener('click', () => {
+  document.querySelector('#program-interest').value = card.dataset.program;
+}));
 
-// Intersection Observer for animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-document.querySelectorAll('.program-card, .gallery-item, .stat, .testimonial-card').forEach((el, index) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    el.style.transitionDelay = `${index * 0.1}s`; // Staggered delay
-    observer.observe(el);
-});
-
-// Parallax effect for hero section
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const heroImage = document.querySelector('.hero-image img');
-    if (heroImage) {
-        heroImage.style.transform = `translateY(${scrolled * 0.5}px)`;
-    }
-});
-
-// Animated counters for stats
-function animateCounters() {
-    const counters = document.querySelectorAll('.stat h3');
-    counters.forEach(counter => {
-        const target = +counter.getAttribute('data-target');
-        const increment = target / 200;
-        let current = 0;
-
-        const updateCounter = () => {
-            current += increment;
-            if (current < target) {
-                counter.innerText = Math.ceil(current) + (target === 5000 ? '+' : '');
-                setTimeout(updateCounter, 10);
-            } else {
-                counter.innerText = target + (target === 5000 ? '+' : '');
-            }
-        };
-        updateCounter();
-    });
+const lightbox = document.querySelector('.lightbox');
+const lightboxImage = lightbox.querySelector('img');
+let lastGalleryLink;
+if (typeof lightbox.showModal === 'function') {
+  document.querySelectorAll('.gallery-item').forEach(link => link.addEventListener('click', event => {
+    event.preventDefault();
+    lastGalleryLink = link;
+    lightboxImage.src = link.href;
+    lightboxImage.alt = link.querySelector('img').alt;
+    lightbox.querySelector('p').textContent = link.querySelector('h3').textContent;
+    lightbox.showModal();
+  }));
+  lightbox.querySelector('button').addEventListener('click', () => lightbox.close());
+  lightbox.addEventListener('click', event => {
+    const bounds = lightbox.getBoundingClientRect();
+    if (event.target === lightbox && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) lightbox.close();
+  });
+  lightbox.addEventListener('close', () => lastGalleryLink?.focus());
 }
 
-// Trigger counter animation when about section is in view
-const aboutSection = document.querySelector('#about');
-let countersAnimated = false;
-const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && !countersAnimated) {
-            animateCounters();
-            countersAnimated = true;
-        }
-    });
-}, { threshold: 0.5 });
-counterObserver.observe(aboutSection);
-
-// Modal functionality for gallery
-const modal = document.createElement('div');
-modal.className = 'modal';
-modal.innerHTML = `
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <img id="modal-image" src="" alt="">
-        <div class="modal-caption" id="modal-caption"></div>
-    </div>
-`;
-document.body.appendChild(modal);
-
-document.querySelectorAll('.gallery-item img').forEach(img => {
-    img.addEventListener('click', () => {
-        const modalImg = document.getElementById('modal-image');
-        const modalCaption = document.getElementById('modal-caption');
-        modal.style.display = 'flex';
-        modalImg.src = img.src;
-        modalCaption.textContent = img.getAttribute('data-caption');
-    });
+const contactForm = document.querySelector('.contact-form');
+// This static site has no admissions endpoint. Export the enquiry without claiming delivery.
+contactForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const data = new FormData(contactForm);
+  const content = `INSANE UNIVERSITY — ENQUIRY DRAFT\n\nName: ${data.get('name')}\nEmail: ${data.get('email')}\nField of study: ${data.get('program') || 'Undecided'}\n\n${data.get('message')}\n\nThis enquiry has not been sent.\n`;
+  const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
+  const download = document.createElement('a');
+  download.href = url;
+  download.download = 'university-enquiry.txt';
+  document.body.append(download);
+  download.click();
+  download.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  document.querySelector('#form-status').textContent = 'Your enquiry download is ready. No message has been sent to admissions.';
 });
-
-document.querySelector('.close').addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-// Form submission handling
-document.querySelector('.contact-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    alert('Thank you for your message! We will get back to you soon.');
-    e.target.reset();
-});
-
-// Dynamic year in footer
-document.querySelector('.footer p').innerHTML = `&copy; ${new Date().getFullYear()} Insane University. All rights reserved.`;
-
-// Typing effect for hero subtitle
-const heroSubtitle = document.querySelector('.hero-subtitle');
-const text = heroSubtitle.textContent;
-heroSubtitle.textContent = '';
-let i = 0;
-
-function typeWriter() {
-    if (i < text.length) {
-        heroSubtitle.textContent += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, 100);
-    }
-}
-
-setTimeout(typeWriter, 1000);
-
-// Particle effect (simple)
-function createParticle() {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.left = Math.random() * 100 + 'vw';
-    particle.style.animationDuration = Math.random() * 3 + 2 + 's';
-    document.body.appendChild(particle);
-
-    setTimeout(() => {
-        particle.remove();
-    }, 5000);
-}
-
-setInterval(createParticle, 300);
-
-// Add particle styles dynamically
-const particleStyles = document.createElement('style');
-particleStyles.textContent = `
-    .particle {
-        position: absolute;
-        top: -10px;
-        width: 10px;
-        height: 10px;
-        background: rgba(230, 126, 34, 0.5);
-        border-radius: 50%;
-        pointer-events: none;
-        animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-        to {
-            transform: translateY(100vh);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(particleStyles);
+document.querySelector('#year').textContent = new Date().getFullYear();
